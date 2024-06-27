@@ -1,0 +1,29 @@
+<span id="current-detail-header" class="mb-4">Current Weather in <%= reverseData.name %>, <%= stateAbbreviation %></span>
+<div id="current-detail-main">
+    <div class="inline-container">
+        <div id="feels-like-div" class="left-align">
+            <span class="current-detail-subheader">Feels Like</span>
+            <span id="feels-like-temp"><%= Math.round(currentData.main.feels_like) %>°</span>
+        </div>
+        <div class="right-align">
+            <h3>Sunset</h3>
+        </div>
+    </div>
+    <div class="grid-container mt-4">
+        <div class="current-main-item" style="border-top: 0 !important;">
+            <span>Ground/Sea Level</span>
+            <span class="right-align">995/1547</span>
+        </div>
+        <div class="current-main-item">
+            <span>Wind</span>
+            <span id="wind-container" class="right-align">
+                <img id="wind-arrow" style="transform: rotate(<%= currentData.wind.deg %>deg)" src="images/icons/wind-arrow.svg" alt="arrow of where the wind is blowing" width="16" height="16">
+                <span style="margin-left: 1rem;">
+                    <%= units === "imperial" ? Math.round(currentData.wind.speed) + ' mph' : Math.round(currentData.wind.speed * 3.6) + ' km/h' %>
+                </span>
+            </span>
+        </div>
+        <div class="current-main-item">test3</div>
+        <div class="current-main-item">test4</div>
+    </div>
+</div>

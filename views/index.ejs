@@ -1,0 +1,35 @@
+<%- include("partials/header.ejs") %>
+<div class="container mt-3 mb-5"> <!-- Apply flexbox utilities -->
+  <div class="row"> <!-- Center the row contents -->
+    <main class="col-md-8">
+      <div class="card mb-4">
+        <!-- Content for Today's Forecast -->
+        <div id="current-summary" class="card">
+        </div>
+      </div>
+      <div class="card mb-4">
+        <!-- Current Weather Details -->
+        <div id="current-detail" class="card-content">
+
+        </div>
+      </div>
+      <div id="map" class="mb-4" style="height: 400px; border-radius: .5rem;">
+        <!-- Current Weather Map -->
+      </div>
+      <div id="week" class="card">
+        <!-- Content for Forecast for the Week -->
+      </div>
+    </main>
+    <aside class="col-md-4">
+      <div class="card">
+        <div class="card-content">
+          <h2>Hello</h2> <!-- Adjust as needed -->
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="js/scripts.js"></script>
+
+<%- include("partials/footer.ejs") %>

@@ -1,0 +1,11 @@
+{
+    "name": "New City",
+    "local_names": {
+        "en": "New City",
+        "ru": "Нью-Сити"
+    },
+    "lat": 41.1469917,
+    "lon": -73.9902998,
+    "country": "US",
+    "state": "New York"
+}

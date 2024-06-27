@@ -1,0 +1,150 @@
+body {
+    background: linear-gradient(
+        to bottom, #005986, #d8eeee
+    );
+    background-attachment: fixed;
+}
+
+.temperature-summary {
+    font-size: 6rem;
+    display:inline-block;
+    font-weight: bold;
+    height: 5.6rem;
+    line-height: 5.6rem;
+}
+
+.other-summary {
+    font-size: 1.5rem;
+    display:block;
+}
+
+.other-info-bold {
+    font-weight: bold;
+}
+
+.card {
+    border:0;
+}
+
+.row {
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#shaded-in-summary-container {
+    background-color: #184958;
+    border-radius: 0.4rem; /* Match the card's border-radius */
+    text-shadow: none;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+#current-summary {
+    background: linear-gradient(135deg, #1881a9, #62c5da);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); /* Adjust the shadow values */
+}
+
+.current-summary {
+    color: white;
+    padding: 0 1rem;
+}
+
+.navbar {
+    background-color: #005986 !important;
+  }
+
+.flex-container {
+    display: flex;
+}
+
+#icon-div {
+    margin-left: auto;
+}
+
+#summary-div {
+    display: flex;
+    flex-direction: column;
+    align-items:start;
+    justify-content:center;
+}
+
+.card-content {
+    margin: 1rem;
+}
+
+#current-unit {
+    font-size: 1.25rem;
+}
+
+#registration-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#registration-container > a {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin: 0;
+}
+
+#current-detail-header {
+    font-size: 1.4rem;
+    display:block;
+}
+
+.inline-container {
+    display:flex;
+}
+
+.left-align {
+    text-align: left;
+}
+
+.right-align {
+    margin-left: auto;
+}
+
+#feels-like-div {
+    display: flex;
+    flex-direction: column;
+}
+
+#current-detail-main {
+    padding-left:.75rem;
+    padding-right:.75rem;
+}
+
+.current-detail-subheader {
+    font-size: 1.25rem;
+}
+
+#feels-like-temp {
+    font-size: 3.5rem;
+    font-weight:500;
+    line-height: 3.5rem;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 36px;
+}
+
+.current-main-item {
+    display: flex;
+    padding: 10px 0;
+    border-top: 1px solid #dedede;
+}
+
+#wind-arrow {
+    transform-origin: center;
+}
+
+#wind-container {
+    display: flex;
+    align-items: center;
+}
