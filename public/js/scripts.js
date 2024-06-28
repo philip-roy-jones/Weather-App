@@ -133,61 +133,33 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const longitude = position.coords.longitude;
     const units = localStorage.getItem("units") || "imperial";
 
-    // Fetch current weather data
-    fetch("/weather", {
+    fetch("/weather-data", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ lat: latitude, lon: longitude, units: units }),
     })
-      .then((weatherResponse) => weatherResponse.json())
-      .then((currentData) => {
-        // Fetch forecast data
-        fetch("/forecast", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ lat: latitude, lon: longitude, units: units }),
-        })
-          .then((forecastResponse) => forecastResponse.json())
-          .then((weekData) => {
-            fetch("/reverse", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ lat: latitude, lon: longitude }),
-            })
-              .then((reverseResponse) => reverseResponse.json())
-              .then((reverseData) => {
-                if (currentData && weekData) {
-                  console.log("Weather Data");
-                  console.log(currentData.weatherData);
-                  console.log("Forecast Data");
-                  console.log(weekData.forecastData);
-                  console.log("Reverse Data");
-                  console.log(reverseData.reverseData[0]);
-                  renderContent(
-                    currentData.weatherData,
-                    weekData.forecastData,
-                    reverseData.reverseData[0]
-                  );
-                } else {
-                  console.error("Error fetching weather or forecast data");
-                }
-              })
-              .catch((error) => {
-                console.error("error fetcching reverse data:", error);
-              });
-          })
-          .catch((error) => {
-            console.error("Error fetching forecast data:", error);
-          });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          console.log("Current Weather Data");
+          console.log(data.weatherData);
+          console.log("Forecast Weather Data");
+          console.log(data.forecastData);
+          console.log("Reverse Geolocation Data");
+          console.log(data.reverseData[0]);
+          renderContent(
+            data.weatherData,
+            data.forecastData,
+            data.reverseData[0]
+          );
+        } else {
+          console.error("Error fetching data:", data.message);
+        }
       })
       .catch((error) => {
-        console.error("Error fetching weather data:", error);
+        console.error("Error fetching data:", error);
       });
 
     var map = L.map("map").setView([latitude, longitude], 10);
@@ -222,102 +194,103 @@ document.addEventListener("DOMContentLoaded", function (event) {
   }
 
   function renderContent(currentData, weekData, reverseData) {
-    const currentDate = new Date(currentData.dt * 1000);
-    const options = {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-    const currentTime = currentDate.toLocaleString("en-US", options);
-
     const stateAbbreviation =
       stateAbbreviations[reverseData.state] || reverseData.state;
-
-    currentSummaryElement.innerHTML = `
-            <span id="shaded-in-summary-container" class="current-summary other-summary">${
-              reverseData.name
-            }, ${stateAbbreviation} As of ${currentTime}</span>
-            <div class="flex-container">
-                <div id="summary-div">
-                    <span class="current-summary temperature-summary">${Math.round(
-                      currentData.main.temp,
-                      0
-                    )}°</span>
-                    <span class="current-summary other-summary">${titleize(
-                      currentData.weather[0].description
-                    )}</span>
-                    <span class="current-summary other-summary">
-                        Max ${Math.round(
-                          currentData.main.temp_max,
-                          0
-                        )}° • Min ${Math.round(currentData.main.temp_min, 0)}°
-                    </span>
+  
+    const templateData = {
+      locationName: reverseData.name,
+      stateAbbreviation: stateAbbreviation,
+      currentTime: new Date(currentData.dt * 1000).toLocaleDateString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }),
+      currentTemp: Math.round(currentData.main.temp),
+      weatherDescription: titleize(currentData.weather[0].description),
+      maxTemp: Math.round(currentData.main.temp_max),
+      minTemp: Math.round(currentData.main.temp_min),
+      weatherIcon: currentData.weather[0].icon,
+    };
+  
+    fetch("/render-template", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(templateData),
+    })
+      .then((response) => response.text())
+      .then((renderedHTML) => {
+        currentSummaryElement.innerHTML = renderedHTML;
+  
+        // Render weekly data
+        weekElement.innerHTML = `
+                <div class="card-content">
+                    <h2>3-Hour Forecast</h2>
+                    <ul>
+                        ${weekData.list
+                          .map((item) => {
+                            // Convert Unix timestamp to local time
+                            const localTime = new Date(item.dt * 1000); // Multiply by 1000 to convert to milliseconds
+  
+                            return `
+                                <li>
+                                    <strong>${localTime.toLocaleString()}</strong>: ${Math.round(
+                              item.main.temp,
+                              0
+                            )}°, ${item.weather[0].description}
+                                </li>
+                            `;
+                          })
+                          .join("")}
+                    </ul>
                 </div>
-                <div id="icon-div">
-                    <span><img src="https://openweathermap.org/img/wn/${
-                      currentData.weather[0].icon
-                    }@4x.png"></span>
-                </div>
+            `;
+        currentDetailElement.innerHTML = `
+        <span id="current-detail-header" class="mb-4">Current Weather in ${
+          reverseData.name
+        }, ${stateAbbreviation}</span>
+        <div id="current-detail-main">
+          <div class="inline-container">
+            <div id="feels-like-div" class="left-align">
+              <span class="current-detail-subheader">Feels Like</span>
+              <span id="feels-like-temp">${Math.round(
+                currentData.main.feels_like,
+                0
+              )}°</span>
             </div>
-        `;
-
-    // Render weekly data
-    weekElement.innerHTML = `
-            <div class="card-content">
-                <h2>3-Hour Forecast</h2>
-                <ul>
-                    ${weekData.list
-                      .map((item) => {
-                        // Convert Unix timestamp to local time
-                        const localTime = new Date(item.dt * 1000); // Multiply by 1000 to convert to milliseconds
-
-                        return `
-                            <li>
-                                <strong>${localTime.toLocaleString()}</strong>: ${Math.round(
-                          item.main.temp,
-                          0
-                        )}°, ${item.weather[0].description}
-                            </li>
-                        `;
-                      })
-                      .join("")}
-                </ul>
+            <div class="right-align">
+              <h3>Sunset shit</h3>
             </div>
+          </div>
+          <div class="grid-container mt-4">
+            <div class="current-main-item" style="border-top: 0 !important;">
+              <span>Ground/Sea Level</span>
+              <span class="right-align">995/1547</span>
+            </div>
+            <div class="current-main-item">
+              <span>Wind</span>
+              <span id="wind-container" class="right-align">
+                <img id="wind-arrow" style="transform: rotate(${
+                  currentData.wind.deg
+                }deg)" src="images/icons/wind-arrow.svg" alt="arrow of where the wind is blowing" width="16" height="16">
+                <span style="margin-left: 1rem;">
+                ${
+                  localStorage.getItem("units") === "imperial"
+                    ? `${Math.round(currentData.wind.speed, 0)} mph`
+                    : `${Math.round(currentData.wind.speed * 3.6, 0)} km/h`
+                }
+                </span>
+              </span>
+            </div>
+            <div class="current-main-item">test3</div>
+            <div class="current-main-item">test4</div>
+          </div>
+          </div>
         `;
-    currentDetailElement.innerHTML = `
-    <span id="current-detail-header" class="mb-4">Current Weather in ${reverseData.name}, ${stateAbbreviation}</span>
-    <div id="current-detail-main">
-      <div class="inline-container">
-        <div id="feels-like-div" class="left-align">
-          <span class="current-detail-subheader">Feels Like</span>
-          <span id="feels-like-temp">${Math.round(currentData.main.feels_like, 0)}°</span>
-        </div>
-        <div class="right-align">
-          <h3>Sunset shit</h3>
-        </div>
-      </div>
-      <div class="grid-container mt-4">
-        <div class="current-main-item" style="border-top: 0 !important;">
-          <span>Ground/Sea Level</span>
-          <span class="right-align">995/1547</span>
-        </div>
-        <div class="current-main-item">
-          <span>Wind</span>
-          <span id="wind-container" class="right-align">
-            <img id="wind-arrow" style="transform: rotate(${currentData.wind.deg}deg)" src="images/icons/wind-arrow.svg" alt="arrow of where the wind is blowing" width="16" height="16">
-            <span style="margin-left: 1rem;">
-            ${
-              localStorage.getItem("units") === "imperial" ? 
-              `${Math.round(currentData.wind.speed, 0)} mph` :
-              `${Math.round(currentData.wind.speed * 3.6, 0)} km/h`
-            }
-            </span>
-          </span>
-        </div>
-        <div class="current-main-item">test3</div>
-        <div class="current-main-item">test4</div>
-      </div>
-    </div>
-    `;
-  }
+      })
+      .catch((error) => {
+        console.error("Error rendering template:", error);
+      });
+  };
 });

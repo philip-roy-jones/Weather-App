@@ -1,16 +1,22 @@
-<% const stateAbbreviation = stateAbbreviations[reverseData.state] || reverseData.state; %>
-<span id="shaded-in-summary-container" class="current-summary other-summary">
-    <%= reverseData.name %>, <%= stateAbbreviation %> As of <%= currentTime %>
-</span>
+<span id="shaded-in-summary-container" class="current-summary other-summary"
+  ><%= locationName %>, <%= stateAbbreviation %> As of <%= currentTime %></span
+>
 <div class="flex-container">
-    <div id="summary-div">
-        <span class="current-summary temperature-summary"><%= Math.round(currentData.main.temp) %>°</span>
-        <span class="current-summary other-summary"><%= titleize(currentData.weather[0].description) %></span>
-        <span class="current-summary other-summary">
-            Max <%= Math.round(currentData.main.temp_max) %>° • Min <%= Math.round(currentData.main.temp_min) %>°
-        </span>
-    </div>
-    <div id="icon-div">
-        <span><img src="https://openweathermap.org/img/wn/<%= currentData.weather[0].icon %>@4x.png"></span>
-    </div>
+  <div id="summary-div">
+    <span class="current-summary temperature-summary"
+      ><%= currentTemp %>°</span
+    >
+    <span class="current-summary other-summary"
+      ><%= weatherDescription %></span
+    >
+    <span class="current-summary other-summary">
+      Max <%= maxTemp %>° • Min <%= minTemp %>°
+    </span>
+  </div>
+  <div id="icon-div">
+    <span
+      ><img
+        src="https://openweathermap.org/img/wn/<%= weatherIcon %>@4x.png"
+    /></span>
+  </div>
 </div>
