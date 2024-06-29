@@ -1,29 +1,141 @@
-<span id="current-detail-header" class="mb-4">Current Weather in <%= reverseData.name %>, <%= stateAbbreviation %></span>
+<span id="current-detail-header" class="mb-4"
+  >Current Weather in <%= locationName %>, <%= stateAbbreviation %></span
+>
 <div id="current-detail-main">
-    <div class="inline-container">
-        <div id="feels-like-div" class="left-align">
-            <span class="current-detail-subheader">Feels Like</span>
-            <span id="feels-like-temp"><%= Math.round(currentData.main.feels_like) %>°</span>
-        </div>
-        <div class="right-align">
-            <h3>Sunset</h3>
-        </div>
+  <div class="inline-container">
+    <div id="feels-like-div" class="left-align">
+      <span class="current-detail-subheader">Feels Like</span>
+      <span id="feels-like-temp"
+        ><%= feelsLikeTemp %>°</span
+      >
     </div>
-    <div class="grid-container mt-4">
-        <div class="current-main-item" style="border-top: 0 !important;">
-            <span>Ground/Sea Level</span>
-            <span class="right-align">995/1547</span>
+    <div id="sunset-container" class="right-align">
+      <div id="path" class="mb-2">
+        <div id="cycle-handler">
+          <img width="20px" height="20px" src="images/icons/sun.svg">
         </div>
-        <div class="current-main-item">
-            <span>Wind</span>
-            <span id="wind-container" class="right-align">
-                <img id="wind-arrow" style="transform: rotate(<%= currentData.wind.deg %>deg)" src="images/icons/wind-arrow.svg" alt="arrow of where the wind is blowing" width="16" height="16">
-                <span style="margin-left: 1rem;">
-                    <%= units === "imperial" ? Math.round(currentData.wind.speed) + ' mph' : Math.round(currentData.wind.speed * 3.6) + ' km/h' %>
-                </span>
-            </span>
-        </div>
-        <div class="current-main-item">test3</div>
-        <div class="current-main-item">test4</div>
+      </div>
+      <div>
+        <span class="sun-times"><%= sunriseTime %></span>
+        <span class="sun-times"><%= sunsetTime %></span>
+      </div>
     </div>
+  </div>
+  <div class="grid-container mt-4">
+    <div class="current-main-item" style="border-top: 0 !important">
+      <span>Visibility</span>
+      <span class="right-align">
+        <% if (units === "imperial") { %>
+          <%= (visibility / 1609).toFixed(2) %> mi
+        <% } else if (units === "metric") { %>
+          <%= (visibility / 1000).toFixed(2) %> km
+        <% } else { %>
+          <%= visibility %> m
+        <% } %>
+      </span>
+    </div>
+    <div id="outer-wind-container" class="current-main-item">
+      <span>Wind</span>
+      <span id="wind-container" class="right-align">
+        <img
+          id="wind-arrow"
+          src="images/icons/wind-arrow.svg"
+          alt="arrow of where the wind is blowing"
+          width="16"
+          height="16"
+          style="transform: rotate(<%= windDegree %>deg)"
+        />
+        <!-- Transform actually loads, IDE is interpreting it as an error -->
+        <span style="margin-left: 1rem">
+            <% if (units === "imperial") { %>
+              <%= Math.round(windSpeed) %> mph
+            <% } else if (units === "metric") { %>
+              <%= Math.round(windSpeed * 3.6) %> km/h
+            <% } else { %>
+              <%= Math.round(windSpeed) %> m/s
+            <% } %> 
+        </span>
+      </span>
+    </div>
+    <div class="current-main-item">
+      <span>Humidity</span>
+      <span class="right-align"><%= humidity %>%</span>
+    </div>
+    <div class="current-main-item">
+      <span>Gust</span>
+      <span class="right-align">
+        <% if (units === "imperial") { %>
+          <%= Math.round(windGust) %> mph
+        <% } else if (units === "metric") { %>
+          <%= Math.round(windGust * 3.6) %> km/h
+        <% } else { %>
+          <%= Math.round(windGust) %> m/s
+        <% } %> 
+      </span>
+    </div>
+    <div class="current-main-item">
+      <span>Pressure</span>
+      <span class="right-align">
+        <% if(units === "imperial") { %>
+          <%= (pressure * 0.029529983071445).toFixed(2) %> in
+        <% } else if (units === "metric") { %>
+          <%= pressure %> mb
+        <% } else { %>
+          <%= pressure %> hPa
+        <% } %>
+      </span>
+    </div>
+    <div class="current-main-item">
+      <span>Cloudiness</span>
+      <span class="right-align"><%= cloudiness %>%</span>
+    </div>
+    <div class="current-main-item">
+      <span>GSL Pressure</span>
+      <span class="right-align">
+        <% if(units === "imperial") { %>
+          <%= (groundPressure * 0.029529983071445).toFixed(2) %>/<%= (seaPressure * 0.029529983071445).toFixed(2) %> in
+        <% } else if (units === "metric") { %>
+          <%= groundPressure %>/<%= seaPressure %> mb
+        <% } else { %>
+          <%= groundPressure %>/<%= seaPressure %> hPa
+        <% } %>
+      </span>
+    </div>
+    <div class="current-main-item">
+      <span>
+        <% if (snow1H !== null || snow3H !== null) { %>
+          Snow Vol 1h/3h
+        <% } else if (rain1H !== null || rain3H !== null) { %>
+          Rain Vol 1h/3h
+        <% } else { %>
+          No Precipitation
+        <% } %>
+      </span>
+      <span class="right-align">
+        <% if (snow1H !== null || snow3H !== null) { %>
+          <% if (snow1H !== null) { %>
+            <%= snow1H %> mm
+          <% } else { %>
+            --
+          <% } %>
+          <% if (snow3H !== null) { %>
+            <%= snow3H %> mm
+          <% } else { %>
+            --
+          <% } %>
+        <% } else if (rain1H !== null || rain3H !== null) { %>
+          <% if (rain1H !== null) { %>
+            <%= rain1H %> mm
+          <% } else { %>
+            --
+          <% } %>
+          <% if (rain3H !== null) { %>
+            <%= rain3H %> mm
+          <% } else { %>
+            --
+          <% } %>
+        <% } %>
+      </span>
+    </div>
+  </div>
 </div>

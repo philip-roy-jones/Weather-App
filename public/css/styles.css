@@ -24,6 +24,7 @@ body {
 
 .card {
     border:0;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
 }
 
 .row {
@@ -147,4 +148,53 @@ body {
 #wind-container {
     display: flex;
     align-items: center;
+}
+
+#outer-wind-container {
+    display: flex;
+    align-items: center;
+}
+
+#sunset-container {
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: end;
+}
+
+.sun-times {
+    font-size: 15px;
+}
+
+#path {
+    width: 75px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
+    border: 3px solid rgb(255, 98, 0);
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    border-bottom: 1px solid transparent; /* Hide bottom border */
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+#cycle-handler {
+    transform-origin: center;
+    transform: rotate(90deg);
+    width: 120%;
+    margin-bottom: -5%;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#sun-icon {
+    /* top: 0;
+    left: 0; */
+    width: 20px; /* Adjust sun icon size */
+    height: 20px; /* Adjust sun icon size */
+    background-color: yellow; /* Sun icon color */
+    border-radius: 50%; /* Make it circular */
 }
