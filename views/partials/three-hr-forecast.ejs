@@ -1,6 +1,31 @@
 <div class="card-content">
-    <h2>3-Hour Forecast</h2>
-    <ul>
-        Testicles
-    </ul>
+    <h2>12 Hour Forecast</h2>
+    <div class="three-hr-row" style="border-top: 0">
+        <span class="three-hr-item">Now</span>
+        <span class="three-hr-item"><%= Math.round(currentData.main.temp) %>°</span>
+        <span class="three-hr-item"><img
+            src="https://openweathermap.org/img/wn/<%= currentData.weather[0].icon %>.png"
+        /></span>
+        <span class="three-hr-item"></span>
+    </div>
+    <% for(let index = 0; index < 4; index++) { %>
+        <div class="three-hr-row">
+            <span class="three-hr-item"><%= forecastTimes[index] %></span>
+            <span class="three-hr-item"><%= Math.round(forecastListData[index].main.temp) %>°</span>
+            <span class="three-hr-item"><img
+                src="https://openweathermap.org/img/wn/<%= forecastListData[index].weather[0].icon %>.png"
+            /></span>
+            <% if (forecastListData[index].pop > 0) { %>
+                <span class="three-hr-item">
+                    <svg height="16" width="16">
+                        <image xlink:href="/images/icons/raindrop.svg" height="16" width="16"></image>
+                    </svg> 
+                    <span class="pop"><%= (forecastListData[index].pop * 100).toFixed(0) %>%</span>
+                </span>
+            <% } else { %>
+                <span class="three-hr-item"><%= (forecastListData[index].pop * 100).toFixed(0) %>%</span>
+            <% } %>
+        </div>
+    <% } %>
+    <button type="button" id="to-three-hour-forecast" class="btn btn-primary">Next 5 Day Forecast</button>
 </div>

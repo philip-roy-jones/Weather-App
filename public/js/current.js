@@ -1,57 +1,5 @@
-function setUnits(units) {
-  const currentUnits = localStorage.getItem("units") || "imperial";
-  // console.log(`currentUnits`);
-  // console.log(currentUnits);
-  localStorage.setItem("units", units);
-
-  if (currentUnits !== units) {
-    location.reload();
-  } else {
-    applyUnits();
-  }
-}
-
-function applyUnits() {
-  const units = localStorage.getItem("units") || "imperial";
-  // console.log("Units applied:", units);
-
-  const dropdownItems = document.querySelectorAll(
-    ".dropdown-menu .dropdown-item"
-  );
-  dropdownItems.forEach((item) => {
-    if (item.getAttribute("onclick").includes(units)) {
-      item.classList.add("active");
-    } else {
-      item.classList.remove("active");
-    }
-  });
-
-  // Update dropdown toggle text based on active unit
-  const unitText = document.getElementById("current-unit");
-
-  switch (units) {
-    case "imperial":
-      unitText.textContent = "°F";
-      break;
-    case "metric":
-      unitText.textContent = "°C";
-      break;
-    case "standard":
-      unitText.textContent = "°K";
-      break;
-    default:
-      unitText.textContent = "Unknown Unit";
-      break;
-  }
-}
-
 document.addEventListener("DOMContentLoaded", function (event) {
-  if (!localStorage.getItem("units")) {
-    setUnits("imperial");
-  } else {
-    applyUnits(); // Apply units if already set
-  }
-
+  
   const threeHrForecastElement = document.getElementById("three-hr");
   const currentSummaryElement = document.getElementById("current-summary");
   const currentDetailElement = document.getElementById("current-detail");
@@ -62,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
   if (currentData && Object.keys(currentData).length > 0) {
     renderContent(currentData, weekData);
   } else {
+    console.log('hi world');
     getLocation(); // Call function to get location
   }
 
@@ -99,7 +48,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
           currentSummaryElement.innerHTML = data.currentSummaryHTML;
           currentDetailElement.innerHTML = data.currentDetailHTML;
           threeHrForecastElement.innerHTML = data.threeHrForecastHTML;
-          
+
+          // Style for time/weather
+          styleUpdate(data.weatherData.dt, data.weatherData.sys.sunset);
+
         } else {
           console.error("Error fetching data:", data.message);
         }
@@ -109,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
       });
 
     // Only feature not precompiled backend
-    var map = L.map("map").setView([latitude, longitude], 10);
+    let map = L.map("map").setView([latitude, longitude], 10);
 
     // Add a base layer (e.g., OpenStreetMap)
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -130,4 +82,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     alert("Unable to retrieve your location.");
   }
 
+  function styleUpdate(currentTime, sunsetTime) {
+    const cyclePath = document.getElementById("path");
+
+    if (currentTime > sunsetTime) {
+      cyclePath.style.borderColor = "darkblue";
+    } 
+  }
 });

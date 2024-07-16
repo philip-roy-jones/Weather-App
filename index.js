@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
 import ejs from 'ejs';
+import fs from 'fs/promises';
 
 function titleize(str) {
   return str
@@ -77,7 +78,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3000;
-const bearerToken = process.env.BEARER_TOKEN;
+const openWeatherMapToken = process.env.OPEN_WEATHER_MAP_TOKEN;
+const googleKey = process.env.GOOGLE_KEY
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -86,6 +88,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", async (req, res) => {
   res.render("index");
+});
+
+app.get("/current", (req, res) => {
+  res.render("current");
 });
 
 app.post("/set-units", (req, res) => {
@@ -109,9 +115,9 @@ app.post("/current-data", async (req, res) => {
   const { lat, lon, units } = req.body;
 
   try {
-    const currentAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${units}&appid=${bearerToken}`;
-    const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${units}&appid=${bearerToken}`;
-    const reverseAPI = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${bearerToken}`;
+    const currentAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${units}&appid=${openWeatherMapToken}`;
+    const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${units}&appid=${openWeatherMapToken}`;
+    const reverseAPI = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${openWeatherMapToken}`;
 
     // Make API requests in parallel
     const [currentResponse, forecastResponse, reverseResponse] =
@@ -129,7 +135,7 @@ app.post("/current-data", async (req, res) => {
       stateAbbreviations[reverseData.state] || reverseData.state;
 
     // Current Summary Rendering
-    var templateData = {
+    let templateData = {
       locationName: reverseData.name,
       stateAbbreviation: stateAbbreviation,
       currentTime: new Date(currentData.dt * 1000).toLocaleDateString("en-US", {
@@ -149,6 +155,11 @@ app.post("/current-data", async (req, res) => {
       templateData
     );
 
+    // Calculating the degree of the cycle
+    const lengthOfDay = currentData.sys.sunset - currentData.sys.sunrise;
+    const timeElapse = currentData.dt - currentData.sys.sunrise;
+    const timeElapseToLengthOfDay = timeElapse/lengthOfDay;
+
     // Current Detail Rendering
     templateData = {
       locationName: reverseData.name,
@@ -164,6 +175,7 @@ app.post("/current-data", async (req, res) => {
         minute: "numeric",
         hour12: true,
       }),
+      timeElapseToLengthOfDay: timeElapseToLengthOfDay,
       windSpeed: currentData.wind.speed,
       windDegree: currentData.wind.deg,
       windGust: currentData.wind.gust,
@@ -186,8 +198,18 @@ app.post("/current-data", async (req, res) => {
     );
 
     // 3hr Forecast Rendering
-    templateData = {
 
+    const forecastTimes = forecastData.list.slice(0, 4).map(item => 
+      new Date(item.dt * 1000).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        hour12: true,
+      })
+    );
+
+    templateData = {
+      forecastListData: forecastData.list,
+      forecastTimes: forecastTimes,
+      currentData: currentData
     }
 
     const threeHRForecastHTML = await ejs.renderFile(
@@ -214,7 +236,7 @@ app.get("/map/:layer/:z/:x/:y", async (req, res) => {
   const { layer, z, x, y } = req.params;
   try {
     const response = await axios.get(
-      `https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${bearerToken}`,
+      `https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${openWeatherMapToken}`,
       {
         responseType: "arraybuffer",
       }
@@ -225,6 +247,37 @@ app.get("/map/:layer/:z/:x/:y", async (req, res) => {
     res.status(500).send("Error fetching map tile");
   }
 });
+
+app.get('/api/location-suggestions', async (req, res) => {
+  const query = req.query.query.toLocaleLowerCase();
+  const autocompleteAPI = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${googleKey}`;
+
+  try {
+    const response = await axios.get(autocompleteAPI);
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch from Google Places API');
+    }
+    const suggestions = response.data.predictions.map(prediction => prediction.description);
+
+    // const jsonData = JSON.stringify(response.data, null, 2);
+    // const filePath = './test.json';
+    // (async () => {
+    //   try {
+    //     await fs.writeFile(filePath, jsonData, 'utf8');
+    //     console.log('JSON data has been written to', filePath);
+    //   } catch (err) {
+    //     console.error('Error writing file:', err);
+    //   }
+    // })();
+
+    res.json(suggestions);
+  } catch (error) {
+    console.error('Error fetching location suggestions:', error.message);
+    res.status(500).json({ error: 'Failed to fetch location suggestions' });
+  }
+
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);

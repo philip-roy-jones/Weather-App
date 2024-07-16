@@ -1,11 +1,238 @@
 {
-    "name": "New City",
-    "local_names": {
-        "en": "New City",
-        "ru": "Нью-Сити"
+  "predictions": [
+    {
+      "description": "New York, NY, USA",
+      "matched_substrings": [
+        {
+          "length": 8,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJOwg_06VPwokRYv534QaPC8g",
+      "reference": "ChIJOwg_06VPwokRYv534QaPC8g",
+      "structured_formatting": {
+        "main_text": "New York",
+        "main_text_matched_substrings": [
+          {
+            "length": 8,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "NY, USA"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "New York"
+        },
+        {
+          "offset": 10,
+          "value": "NY"
+        },
+        {
+          "offset": 14,
+          "value": "USA"
+        }
+      ],
+      "types": [
+        "geocode",
+        "political",
+        "locality"
+      ]
     },
-    "lat": 41.1469917,
-    "lon": -73.9902998,
-    "country": "US",
-    "state": "New York"
+    {
+      "description": "New York Boulders, Phil Tisi Way, Pomona, NY, USA",
+      "matched_substrings": [
+        {
+          "length": 8,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJt8_21M7cwokRLEbM7AqjBrs",
+      "reference": "ChIJt8_21M7cwokRLEbM7AqjBrs",
+      "structured_formatting": {
+        "main_text": "New York Boulders",
+        "main_text_matched_substrings": [
+          {
+            "length": 8,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Phil Tisi Way, Pomona, NY, USA"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "New York Boulders"
+        },
+        {
+          "offset": 19,
+          "value": "Phil Tisi Way"
+        },
+        {
+          "offset": 34,
+          "value": "Pomona"
+        },
+        {
+          "offset": 42,
+          "value": "NY"
+        },
+        {
+          "offset": 46,
+          "value": "USA"
+        }
+      ],
+      "types": [
+        "establishment",
+        "point_of_interest",
+        "stadium"
+      ]
+    },
+    {
+      "description": "New York Country Club, Brick Church Road, Spring Valley, NY, USA",
+      "matched_substrings": [
+        {
+          "length": 8,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJS2LOeQ3dwokRCe5sprGEiSI",
+      "reference": "ChIJS2LOeQ3dwokRCe5sprGEiSI",
+      "structured_formatting": {
+        "main_text": "New York Country Club",
+        "main_text_matched_substrings": [
+          {
+            "length": 8,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Brick Church Road, Spring Valley, NY, USA"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "New York Country Club"
+        },
+        {
+          "offset": 23,
+          "value": "Brick Church Road"
+        },
+        {
+          "offset": 42,
+          "value": "Spring Valley"
+        },
+        {
+          "offset": 57,
+          "value": "NY"
+        },
+        {
+          "offset": 61,
+          "value": "USA"
+        }
+      ],
+      "types": [
+        "establishment",
+        "point_of_interest"
+      ]
+    },
+    {
+      "description": "New York Marriott Marquis, Broadway, New York, NY, USA",
+      "matched_substrings": [
+        {
+          "length": 8,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJiVXoAFVYwokREqPijh-d8xg",
+      "reference": "ChIJiVXoAFVYwokREqPijh-d8xg",
+      "structured_formatting": {
+        "main_text": "New York Marriott Marquis",
+        "main_text_matched_substrings": [
+          {
+            "length": 8,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Broadway, New York, NY, USA"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "New York Marriott Marquis"
+        },
+        {
+          "offset": 27,
+          "value": "Broadway"
+        },
+        {
+          "offset": 37,
+          "value": "New York"
+        },
+        {
+          "offset": 47,
+          "value": "NY"
+        },
+        {
+          "offset": 51,
+          "value": "USA"
+        }
+      ],
+      "types": [
+        "establishment",
+        "lodging",
+        "point_of_interest"
+      ]
+    },
+    {
+      "description": "New York Botanical Garden, Southern Boulevard, The Bronx, NY, USA",
+      "matched_substrings": [
+        {
+          "length": 8,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJyRUHuHzzwokRPxVBNKhcP9c",
+      "reference": "ChIJyRUHuHzzwokRPxVBNKhcP9c",
+      "structured_formatting": {
+        "main_text": "New York Botanical Garden",
+        "main_text_matched_substrings": [
+          {
+            "length": 8,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Southern Boulevard, The Bronx, NY, USA"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "New York Botanical Garden"
+        },
+        {
+          "offset": 27,
+          "value": "Southern Boulevard"
+        },
+        {
+          "offset": 47,
+          "value": "The Bronx"
+        },
+        {
+          "offset": 58,
+          "value": "NY"
+        },
+        {
+          "offset": 62,
+          "value": "USA"
+        }
+      ],
+      "types": [
+        "park",
+        "museum",
+        "establishment",
+        "point_of_interest",
+        "tourist_attraction"
+      ]
+    }
+  ],
+  "status": "OK"
 }
