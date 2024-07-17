@@ -94,6 +94,10 @@ app.get("/current", (req, res) => {
   res.render("current");
 });
 
+app.get("/5-day", (req, res) => {
+  res.render("5-day");
+})
+
 app.post("/set-units", (req, res) => {
   const units = req.body.units; // Extract units from request body
 
@@ -133,7 +137,7 @@ app.post("/current-data", async (req, res) => {
 
     const stateAbbreviation =
       stateAbbreviations[reverseData.state] || reverseData.state;
-
+    
     // Current Summary Rendering
     let templateData = {
       locationName: reverseData.name,
@@ -149,7 +153,7 @@ app.post("/current-data", async (req, res) => {
       minTemp: Math.round(currentData.main.temp_min),
       weatherIcon: currentData.weather[0].icon,
     };
-
+    
     const currentSummaryHTML = await ejs.renderFile(
       path.join(__dirname, "views", "partials", "current-summary.ejs"),
       templateData
@@ -198,7 +202,7 @@ app.post("/current-data", async (req, res) => {
     );
 
     // 3hr Forecast Rendering
-
+    
     const forecastTimes = forecastData.list.slice(0, 4).map(item => 
       new Date(item.dt * 1000).toLocaleTimeString("en-US", {
         hour: "numeric",
@@ -216,15 +220,15 @@ app.post("/current-data", async (req, res) => {
       path.join(__dirname, "views", "partials", "three-hr-forecast.ejs"),
       templateData
     )
-
+    
     res.json({
-      status: "success",
       currentSummaryHTML: currentSummaryHTML,
       currentDetailHTML: currentDetailHTML,
       threeHrForecastHTML: threeHRForecastHTML,
       weatherData: currentData,
       forecastData: forecastData,
       reverseData: reverseData,
+      status: "success"
     });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
@@ -258,7 +262,7 @@ app.get('/api/location-suggestions', async (req, res) => {
     if (response.status !== 200) {
       throw new Error('Failed to fetch from Google Places API');
     }
-    const suggestions = response.data.predictions.map(prediction => prediction.description);
+    const suggestions = response.data.predictions.map(prediction => ({ description: prediction.description, placeID: prediction.place_id }));
 
     // const jsonData = JSON.stringify(response.data, null, 2);
     // const filePath = './test.json';
@@ -276,8 +280,27 @@ app.get('/api/location-suggestions', async (req, res) => {
     console.error('Error fetching location suggestions:', error.message);
     res.status(500).json({ error: 'Failed to fetch location suggestions' });
   }
+});
 
-})
+app.post('/api/get-coordinates', async (req, res) => {
+  const { selection } = req.body;
+  const fields = 'geometry/location'; // Specify the fields you want to retrieve to save money
+  const placeDetailsAPI = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${selection}&fields=${fields}&key=${googleKey}`;
+
+  try {
+    const response = await axios.get(placeDetailsAPI);
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch from Google Places API');
+    }
+
+    const { lat, lng } = response.data.result.geometry.location;
+    res.json({ lat, lng });
+  } catch (error) {
+    console.error('Error fetching coordinates:', error.message);
+    res.status(500).json({ error: 'Failed to fetch coordinates' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}.`);

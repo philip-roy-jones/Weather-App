@@ -35,57 +35,9 @@
         }
       ],
       "types": [
+        "locality",
         "geocode",
-        "political",
-        "locality"
-      ]
-    },
-    {
-      "description": "New York Boulders, Phil Tisi Way, Pomona, NY, USA",
-      "matched_substrings": [
-        {
-          "length": 8,
-          "offset": 0
-        }
-      ],
-      "place_id": "ChIJt8_21M7cwokRLEbM7AqjBrs",
-      "reference": "ChIJt8_21M7cwokRLEbM7AqjBrs",
-      "structured_formatting": {
-        "main_text": "New York Boulders",
-        "main_text_matched_substrings": [
-          {
-            "length": 8,
-            "offset": 0
-          }
-        ],
-        "secondary_text": "Phil Tisi Way, Pomona, NY, USA"
-      },
-      "terms": [
-        {
-          "offset": 0,
-          "value": "New York Boulders"
-        },
-        {
-          "offset": 19,
-          "value": "Phil Tisi Way"
-        },
-        {
-          "offset": 34,
-          "value": "Pomona"
-        },
-        {
-          "offset": 42,
-          "value": "NY"
-        },
-        {
-          "offset": 46,
-          "value": "USA"
-        }
-      ],
-      "types": [
-        "establishment",
-        "point_of_interest",
-        "stadium"
+        "political"
       ]
     },
     {
@@ -131,8 +83,56 @@
         }
       ],
       "types": [
+        "point_of_interest",
+        "establishment"
+      ]
+    },
+    {
+      "description": "New York Boulders, Phil Tisi Way, Pomona, NY, USA",
+      "matched_substrings": [
+        {
+          "length": 8,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJt8_21M7cwokRLEbM7AqjBrs",
+      "reference": "ChIJt8_21M7cwokRLEbM7AqjBrs",
+      "structured_formatting": {
+        "main_text": "New York Boulders",
+        "main_text_matched_substrings": [
+          {
+            "length": 8,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Phil Tisi Way, Pomona, NY, USA"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "New York Boulders"
+        },
+        {
+          "offset": 19,
+          "value": "Phil Tisi Way"
+        },
+        {
+          "offset": 34,
+          "value": "Pomona"
+        },
+        {
+          "offset": 42,
+          "value": "NY"
+        },
+        {
+          "offset": 46,
+          "value": "USA"
+        }
+      ],
+      "types": [
+        "point_of_interest",
         "establishment",
-        "point_of_interest"
+        "stadium"
       ]
     },
     {
@@ -178,59 +178,57 @@
         }
       ],
       "types": [
+        "point_of_interest",
         "establishment",
-        "lodging",
-        "point_of_interest"
+        "lodging"
       ]
     },
     {
-      "description": "New York Botanical Garden, Southern Boulevard, The Bronx, NY, USA",
+      "description": "New York Public Library - Stephen A. Schwarzman Building, 5th Avenue, New York, NY, USA",
       "matched_substrings": [
         {
           "length": 8,
           "offset": 0
         }
       ],
-      "place_id": "ChIJyRUHuHzzwokRPxVBNKhcP9c",
-      "reference": "ChIJyRUHuHzzwokRPxVBNKhcP9c",
+      "place_id": "ChIJqaiomQBZwokRTHOaUG7fUTs",
+      "reference": "ChIJqaiomQBZwokRTHOaUG7fUTs",
       "structured_formatting": {
-        "main_text": "New York Botanical Garden",
+        "main_text": "New York Public Library - Stephen A. Schwarzman Building",
         "main_text_matched_substrings": [
           {
             "length": 8,
             "offset": 0
           }
         ],
-        "secondary_text": "Southern Boulevard, The Bronx, NY, USA"
+        "secondary_text": "5th Avenue, New York, NY, USA"
       },
       "terms": [
         {
           "offset": 0,
-          "value": "New York Botanical Garden"
-        },
-        {
-          "offset": 27,
-          "value": "Southern Boulevard"
-        },
-        {
-          "offset": 47,
-          "value": "The Bronx"
+          "value": "New York Public Library - Stephen A. Schwarzman Building"
         },
         {
           "offset": 58,
+          "value": "5th Avenue"
+        },
+        {
+          "offset": 70,
+          "value": "New York"
+        },
+        {
+          "offset": 80,
           "value": "NY"
         },
         {
-          "offset": 62,
+          "offset": 84,
           "value": "USA"
         }
       ],
       "types": [
-        "park",
-        "museum",
-        "establishment",
+        "library",
         "point_of_interest",
-        "tourist_attraction"
+        "establishment"
       ]
     }
   ],

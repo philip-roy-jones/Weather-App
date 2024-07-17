@@ -301,6 +301,11 @@ body {
     align-items: center;
 }
 
+.location-item {
+    color: white;
+    cursor: pointer;
+}
+
 .location-buttons {
     width: auto;
 }

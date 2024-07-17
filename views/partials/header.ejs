@@ -44,7 +44,7 @@
             ><img src="images/icons/logo.svg" alt="logo" width="50" height="50"
           /></a>
           <div id="search-div" class="mx-auto">
-            <form class="d-flex" role="search">
+            <form id="search-form" class="d-flex" role="search">
               <input
                 name="location-search"
                 id="location-input"
@@ -52,11 +52,10 @@
                 type="search"
                 placeholder="Enter city or zipcode"
                 aria-label="Search"
-                style="text-align: center;"
+                style="text-align: center"
               />
             </form>
-            <div id="suggestions" class="mx-auto">
-            </div>
+            <div id="suggestions" class="mx-auto"></div>
           </div>
           <ul id="top-nav-ul" class="navbar-nav mb-lg-0 ms-auto">
             <li class="nav-item dropdown">
@@ -73,22 +72,25 @@
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li>
                   <a
+                    id="imperial-link"
                     class="dropdown-item active"
                     href="#"
-                    onclick="setUnits('imperial')"
                     >Fahrenheit</a
                   >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#" onclick="setUnits('metric')"
+                  <a 
+                    id="metric-link"
+                    class="dropdown-item" 
+                    href="#"
                     >Celsius</a
                   >
                 </li>
                 <li>
                   <a
+                    id="standard-link"
                     class="dropdown-item"
                     href="#"
-                    onclick="setUnits('standard')"
                     >Kelvin</a
                   >
                 </li>
@@ -122,42 +124,60 @@
                 <div class="carousel-item active">
                   <div class="container px-5 d-flex">
                     <div class="location-items">
-                      <span>Test 1</span>
+                      <span id="current-location-span" class="location-item"
+                        >Current Location</span
+                      >
                     </div>
                     <div class="location-items">
-                      <span>Test 2</span>
+                      <span class="location-item">Test 2</span>
                     </div>
                     <div class="location-items">
-                      <span>Test 3</span>
+                      <span class="location-item">Test 3</span>
                     </div>
                     <div class="location-items">
-                      <span>Test 4</span>
+                      <span class="location-item">Test 4</span>
                     </div>
                   </div>
                 </div>
                 <div class="carousel-item">
                   <div class="container px-5 d-flex">
                     <div class="location-items">
-                      <span>Test 5</span>
+                      <span class="location-item">Test 5</span>
                     </div>
                     <div class="location-items">
-                      <span>Test 6</span>
+                      <span class="location-item">Test 6</span>
                     </div>
                     <div class="location-items">
-                      <span>Test 7</span>
+                      <span class="location-item">Test 7</span>
                     </div>
                     <div class="location-items">
-                      <span>Test 8</span>
+                      <span class="location-item">Test 8</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <button class="carousel-control-prev location-buttons" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <button
+                class="carousel-control-prev location-buttons"
+                type="button"
+                data-bs-target="#carouselExample"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
                 <span class="visually-hidden">Previous</span>
               </button>
-              <button class="carousel-control-next location-buttons" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <button
+                class="carousel-control-next location-buttons"
+                type="button"
+                data-bs-target="#carouselExample"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
                 <span class="visually-hidden">Next</span>
               </button>
             </div>
@@ -183,6 +203,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ejs@3.1.10/ejs.min.js"></script>
-    <script src="js/common.js"></script>
-  </body>
+    <script src="js/common.js" type="module"></script>

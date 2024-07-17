@@ -1,33 +1,14 @@
-document.addEventListener("DOMContentLoaded", function (event) {
-  
+document.addEventListener("DOMContentLoaded", function () {
+
   const threeHrForecastElement = document.getElementById("three-hr");
   const currentSummaryElement = document.getElementById("current-summary");
   const currentDetailElement = document.getElementById("current-detail");
 
-  const currentData = window.currentData || {};
-  const weekData = window.weekData || {};
-
-  if (currentData && Object.keys(currentData).length > 0) {
-    renderContent(currentData, weekData);
-  } else {
-    console.log('hi world');
-    getLocation(); // Call function to get location
-  }
-
-  function getLocation() {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(success, error);
-    } else {
-      console.log("Geolocation API not supported.");
-      alert("Geolocation is not supported by your browser.");
-    }
-  }
-
-  function success(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
+  function renderContent() {
+    const latitude = localStorage.getItem('latitude');
+    const longitude = localStorage.getItem('longitude');
     const units = localStorage.getItem("units") || "imperial";
-
+    
     fetch("/current-data", {
       method: "POST",
       headers: {
@@ -44,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
           console.log(data.forecastData);
           console.log("Reverse Geolocation Data");
           console.log(data.reverseData);
-          
+
           currentSummaryElement.innerHTML = data.currentSummaryHTML;
           currentDetailElement.innerHTML = data.currentDetailHTML;
           threeHrForecastElement.innerHTML = data.threeHrForecastHTML;
@@ -77,11 +58,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }).addTo(map);
   }
 
-  function error() {
-    console.log("Unable to retrieve your location.");
-    alert("Unable to retrieve your location.");
-  }
-
   function styleUpdate(currentTime, sunsetTime) {
     const cyclePath = document.getElementById("path");
 
@@ -89,4 +65,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
       cyclePath.style.borderColor = "darkblue";
     } 
   }
+
+  renderContent();
 });
