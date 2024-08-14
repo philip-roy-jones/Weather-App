@@ -5,4 +5,4 @@ Using OpenWeatherMap API, this web app features:
 - Weather statistics
 - Dynamic styling
 
-Please remember to npm i before running in Node.
+Please remember to npm i before starting a server.
