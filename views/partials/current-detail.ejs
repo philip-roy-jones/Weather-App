@@ -74,16 +74,21 @@
       <span class="right-align"><%= humidity %>%</span>
     </div>
     <div class="current-main-item">
-      <span>Gust</span>
-      <span class="right-align">
-        <% if (units === "imperial") { %>
-          <%= Math.round(windGust) %> mph
-        <% } else if (units === "metric") { %>
-          <%= Math.round(windGust * 3.6) %> km/h
-        <% } else { %>
-          <%= Math.round(windGust) %> m/s
-        <% } %> 
-      </span>
+      <% if (windGust) { %>
+        <span>Gust</span>
+          <span class="right-align">
+            <% if (units === "imperial") { %>
+              <%= Math.round(windGust) %> mph
+            <% } else if (units === "metric") { %>
+              <%= Math.round(windGust * 3.6) %> km/h
+            <% } else { %>
+              <%= Math.round(windGust) %> m/s
+            <% } %>
+          </span>
+        </span>
+      <% } else { %>
+        No Reported Gust
+      <% } %>
     </div>
     <div class="current-main-item">
       <span>Pressure</span>

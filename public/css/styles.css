@@ -5,6 +5,10 @@ body {
     background-attachment: fixed;
 }
 
+.blank-page {
+    height: 100vh;
+}
+
 .temperature-summary {
     font-size: 6rem;
     display:inline-block;
@@ -234,6 +238,11 @@ body {
     align-items: center;
 }
 
+.middle-navbar-items {
+    color: white;
+    display: inline;
+}
+
 #bottom-navbar {
     background-color: #003651;
 }
@@ -299,11 +308,22 @@ body {
     height: 40px;
     flex: 1;
     align-items: center;
+    border-right: white solid 1px;
+    padding-left: .5rem;
 }
 
 .location-item {
     color: white;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.location-text {
+    text-overflow: ellipsis;
+    width: 10rem;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .location-buttons {
@@ -326,6 +346,73 @@ body {
 }
 .suggestion-item:hover {
     background-color: #f0f0f0;
+}
+
+#current-location-span {
+    cursor: pointer;
+    width: 100%;
+}
+
+.carousel-inner {
+    display: inline;
+}
+
+#middle-navbar-container {
+    display: flex;
+    width: 100%;
+}
+
+#carouselExample {
+    width: 100%;
+    display: flex;
+}
+
+#current-location-div {
+    display: flex;
+    white-space: nowrap;
+    text-align: center;
+    align-items: center;
+    border-left: 1px black solid;
+    border-right: 1px black solid;
+}
+
+.weather-icon-history {
+    width: 40px;
+    height: 40px;
+}
+
+.under-construction-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: auto;
+}
+
+.under-construction {
+    background-color: white;
+    width: 50%;
+    height: auto;
+    text-align: center;
+    align-content: center;
+}
+
+.youtube-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    margin: 0; 
+}
+
+.youtube-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 /* MEDIA QUERIES */

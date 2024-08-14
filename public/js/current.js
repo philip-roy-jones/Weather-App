@@ -1,14 +1,15 @@
-document.addEventListener("DOMContentLoaded", function () {
+import { locationStorage } from "./common.js";
 
+document.addEventListener("DOMContentLoaded", function () {
   const threeHrForecastElement = document.getElementById("three-hr");
   const currentSummaryElement = document.getElementById("current-summary");
   const currentDetailElement = document.getElementById("current-detail");
 
   function renderContent() {
-    const latitude = localStorage.getItem('latitude');
-    const longitude = localStorage.getItem('longitude');
+    const latitude = localStorage.getItem("latitude");
+    const longitude = localStorage.getItem("longitude");
     const units = localStorage.getItem("units") || "imperial";
-    
+
     fetch("/current-data", {
       method: "POST",
       headers: {
@@ -26,13 +27,17 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("Reverse Geolocation Data");
           console.log(data.reverseData);
 
+          locationStorage.push({
+            weatherData: data.weatherData,
+            reverseData: data.reverseData,
+          });
+
           currentSummaryElement.innerHTML = data.currentSummaryHTML;
           currentDetailElement.innerHTML = data.currentDetailHTML;
           threeHrForecastElement.innerHTML = data.threeHrForecastHTML;
 
           // Style for time/weather
           styleUpdate(data.weatherData.dt, data.weatherData.sys.sunset);
-
         } else {
           console.error("Error fetching data:", data.message);
         }
@@ -63,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (currentTime > sunsetTime) {
       cyclePath.style.borderColor = "darkblue";
-    } 
+    }
   }
 
   renderContent();

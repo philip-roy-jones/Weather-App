@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
 import ejs from 'ejs';
-import fs from 'fs/promises';
+import {stateAbbreviations} from './shared/stateAbbreviations.js';
 
 function titleize(str) {
   return str
@@ -16,59 +16,6 @@ function titleize(str) {
     })
     .join(" ");
 }
-
-const stateAbbreviations = {
-  "Alabama": "AL",
-  "Alaska": "AK",
-  "Arizona": "AZ",
-  "Arkansas": "AR",
-  "California": "CA",
-  "Colorado": "CO",
-  "Connecticut": "CT",
-  "Delaware": "DE",
-  "Florida": "FL",
-  "Georgia": "GA",
-  "Hawaii": "HI",
-  "Idaho": "ID",
-  "Illinois": "IL",
-  "Indiana": "IN",
-  "Iowa": "IA",
-  "Kansas": "KS",
-  "Kentucky": "KY",
-  "Louisiana": "LA",
-  "Maine": "ME",
-  "Maryland": "MD",
-  "Massachusetts": "MA",
-  "Michigan": "MI",
-  "Minnesota": "MN",
-  "Mississippi": "MS",
-  "Missouri": "MO",
-  "Montana": "MT",
-  "Nebraska": "NE",
-  "Nevada": "NV",
-  "New Hampshire": "NH",
-  "New Jersey": "NJ",
-  "New Mexico": "NM",
-  "New York": "NY",
-  "North Carolina": "NC",
-  "North Dakota": "ND",
-  "Ohio": "OH",
-  "Oklahoma": "OK",
-  "Oregon": "OR",
-  "Pennsylvania": "PA",
-  "Rhode Island": "RI",
-  "South Carolina": "SC",
-  "South Dakota": "SD",
-  "Tennessee": "TN",
-  "Texas": "TX",
-  "Utah": "UT",
-  "Vermont": "VT",
-  "Virginia": "VA",
-  "Washington": "WA",
-  "West Virginia": "WV",
-  "Wisconsin": "WI",
-  "Wyoming": "WY"
-};
 
 dotenv.config();
 
@@ -96,6 +43,10 @@ app.get("/current", (req, res) => {
 
 app.get("/5-day", (req, res) => {
   res.render("5-day");
+})
+
+app.get("/air-pollution", (req, res) => {
+  res.render("air-pollution");
 })
 
 app.post("/set-units", (req, res) => {
@@ -137,16 +88,29 @@ app.post("/current-data", async (req, res) => {
 
     const stateAbbreviation =
       stateAbbreviations[reverseData.state] || reverseData.state;
-    
+
+    function formatUTCToTime(unixTS, timeOffset) {
+      const offset = (timeOffset * 1000);
+      const utcDate = new Date(unixTS * 1000 + offset);
+
+      let hours = utcDate.getUTCHours();
+      let minutes = utcDate.getUTCMinutes();
+      const amOrPm = hours >= 12 ? 'PM' : 'AM'
+
+      // Formatting
+      hours = hours % 12;
+      hours = hours ? hours: 12; // If hour is '0' it should really be '12'
+
+      minutes = minutes < 10 ? '0' + minutes : minutes;   // Minutes should always have two digits
+
+      return `${hours}:${minutes} ${amOrPm}`;
+    }
+
     // Current Summary Rendering
     let templateData = {
       locationName: reverseData.name,
       stateAbbreviation: stateAbbreviation,
-      currentTime: new Date(currentData.dt * 1000).toLocaleDateString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }),
+      currentTime : formatUTCToTime(currentData.dt, currentData.timezone),
       currentTemp: Math.round(currentData.main.temp),
       weatherDescription: titleize(currentData.weather[0].description),
       maxTemp: Math.round(currentData.main.temp_max),
@@ -169,16 +133,8 @@ app.post("/current-data", async (req, res) => {
       locationName: reverseData.name,
       stateAbbreviation: stateAbbreviation,
       feelsLikeTemp: Math.round(currentData.main.feels_like),
-      sunriseTime: new Date(currentData.sys.sunrise * 1000).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }),
-      sunsetTime: new Date(currentData.sys.sunset * 1000).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }),
+      sunriseTime: formatUTCToTime(currentData.sys.sunrise, currentData.timezone),
+      sunsetTime: formatUTCToTime(currentData.sys.sunset, currentData.timezone),
       timeElapseToLengthOfDay: timeElapseToLengthOfDay,
       windSpeed: currentData.wind.speed,
       windDegree: currentData.wind.deg,
@@ -202,13 +158,18 @@ app.post("/current-data", async (req, res) => {
     );
 
     // 3hr Forecast Rendering
-    
-    const forecastTimes = forecastData.list.slice(0, 4).map(item => 
-      new Date(item.dt * 1000).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        hour12: true,
-      })
-    );
+    const forecastTimeZone = forecastData.city.timezone * 1000
+    const forecastTimes = forecastData.list.slice(0, 4).map(item => {
+
+      const utcDate = new Date(item.dt * 1000 + forecastTimeZone)
+      let hours = utcDate.getUTCHours()
+      const amOrPm = hours >= 12 ? 'PM' : 'AM'
+
+      hours = hours % 12;
+      hours = hours ? hours: 12; // If hour is '0' it should really be '12'
+
+      return `${hours} ${amOrPm}`
+    });
 
     templateData = {
       forecastListData: forecastData.list,
@@ -234,6 +195,48 @@ app.post("/current-data", async (req, res) => {
     res.status(500).json({ status: "error", message: error.message });
   }
 });
+
+app.post("/5-day-data", async (req, res) => {
+  const { lat, lon, units } = req.body;
+
+  try {
+    const currentAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${units}&appid=${openWeatherMapToken}`;
+    const forecastAPI = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${units}&appid=${openWeatherMapToken}`;
+    const reverseAPI = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${openWeatherMapToken}`;
+
+    // Make API requests in parallel
+    const [currentResponse, forecastResponse, reverseResponse] =
+    await Promise.all([
+      axios.get(currentAPI),
+      axios.get(forecastAPI),
+      axios.get(reverseAPI),
+    ]);
+
+    const currentData = currentResponse.data;
+    const forecastData = forecastResponse.data;
+    const reverseData = reverseResponse.data[0];
+
+    const dayHash = {};
+    const timeOffset = forecastData.city.timezone
+    for (const item of forecastData.list) {
+      const unix = item.dt * 1000 + timeOffset * 1000
+      const date = new Date(unix)
+      const utcDate = date.getUTCDate();
+      (dayHash[utcDate] ??= []).push(item)
+    }
+
+    res.json({
+      weatherData: currentData,
+      forecastData: forecastData,
+      reverseData: reverseData,
+      status: "success"
+    })
+
+  } catch (error) {
+    console.log(`ERROR: ${error.message}`)
+    res.status(500).json({ status: "error", message: error.message });
+  }
+})
 
 // Needs to remain separate due to constant updates from user interaction
 app.get("/map/:layer/:z/:x/:y", async (req, res) => {

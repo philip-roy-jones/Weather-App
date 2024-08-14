@@ -1,3 +1,151 @@
+const stateAbbreviations = {
+  "Alabama": "AL",
+  "Alaska": "AK",
+  "Arizona": "AZ",
+  "Arkansas": "AR",
+  "California": "CA",
+  "Colorado": "CO",
+  "Connecticut": "CT",
+  "Delaware": "DE",
+  "Florida": "FL",
+  "Georgia": "GA",
+  "Hawaii": "HI",
+  "Idaho": "ID",
+  "Illinois": "IL",
+  "Indiana": "IN",
+  "Iowa": "IA",
+  "Kansas": "KS",
+  "Kentucky": "KY",
+  "Louisiana": "LA",
+  "Maine": "ME",
+  "Maryland": "MD",
+  "Massachusetts": "MA",
+  "Michigan": "MI",
+  "Minnesota": "MN",
+  "Mississippi": "MS",
+  "Missouri": "MO",
+  "Montana": "MT",
+  "Nebraska": "NE",
+  "Nevada": "NV",
+  "New Hampshire": "NH",
+  "New Jersey": "NJ",
+  "New Mexico": "NM",
+  "New York": "NY",
+  "North Carolina": "NC",
+  "North Dakota": "ND",
+  "Ohio": "OH",
+  "Oklahoma": "OK",
+  "Oregon": "OR",
+  "Pennsylvania": "PA",
+  "Rhode Island": "RI",
+  "South Carolina": "SC",
+  "South Dakota": "SD",
+  "Tennessee": "TN",
+  "Texas": "TX",
+  "Utah": "UT",
+  "Vermont": "VT",
+  "Virginia": "VA",
+  "Washington": "WA",
+  "West Virginia": "WV",
+  "Wisconsin": "WI",
+  "Wyoming": "WY"
+};
+
+
+const locationStorage = {
+  initialize() {
+    if (!localStorage.getItem('locationStorage')) {
+      localStorage.setItem('locationStorage', JSON.stringify([]));
+    }
+  },
+  push(location) {
+    let locationStorageArray = JSON.parse(localStorage.getItem('locationStorage'));
+
+    // Check if the entry already exists and remove it
+    const index = locationStorageArray.findIndex(
+      storedLocation => storedLocation.reverseData.lat === location.reverseData.lat &&
+                        storedLocation.reverseData.lon === location.reverseData.lon
+    );
+    if (index !== -1) {
+      locationStorageArray.splice(index, 1); // Remove the existing entry
+    }
+
+    // Add the new entry to the front
+    locationStorageArray.unshift(location);
+
+    // Ensure maximum size of 8
+    if (locationStorageArray.length > 8) {
+      locationStorageArray.pop();
+    }
+
+    localStorage.setItem('locationStorage', JSON.stringify(locationStorageArray));
+  },
+  pop() {
+    let locationStorageArray = JSON.parse(localStorage.getItem('locationStorage'));
+    if (locationStorageArray.length === 0) {
+      return null;
+    }
+    let poppedElement = locationStorageArray.pop();
+    localStorage.setItem('locationStorage', JSON.stringify(locationStorageArray));
+    return poppedElement;
+  },
+  // containsCoords(lat, lon) {
+  //   let locationStorageArray = JSON.parse(localStorage.getItem('locationStorage'));
+
+  //   const roundedLat = Math.round(lat, 4);
+  //   const roundedLon = Math.round(lon, 4);
+  //   for (const location of locationStorageArray) {
+  //     const storageLat = Math.round(location.reverseData.lat,4);
+  //     const storageLon = Math.round(location.reverseData.lon,4);
+
+  //     if (roundedLat === storageLat && roundedLon === storageLon) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // },
+  get() {
+    return JSON.parse(localStorage.getItem('locationStorage'));
+  }
+};
+
+function renderLocationHistory() {
+  let locationFirstBatchElement = document.getElementById("location-first-batch");
+  let locationSecondBatchElement = document.getElementById("location-second-batch");
+  let currentBatch = locationFirstBatchElement;
+  let locationArray = locationStorage.get();
+
+  for (let locationIndex = 0; locationIndex < locationArray.length; locationIndex++) {
+    if (locationIndex > 3) {
+      currentBatch = locationSecondBatchElement;
+    }
+    const stateAbbreviation = stateAbbreviations[locationArray[locationIndex].reverseData.state] || locationArray[locationIndex].reverseData.state;
+    const city = locationArray[locationIndex].reverseData.name;
+    const temp = Math.round(locationArray[locationIndex].weatherData.main.temp);
+
+    const locationString = `${temp}° ${city}, ${stateAbbreviation}`;
+
+    let outterDiv = document.createElement("div");
+    outterDiv.className = "location-items";
+
+    let innerSpan = document.createElement("span");
+    innerSpan.className = "location-item";
+
+    let icon = document.createElement('img');
+    icon.src = `https://openweathermap.org/img/wn/${locationArray[locationIndex].weatherData.weather[0].icon}.png`;
+    icon.className = 'weather-icon-history';
+
+    let textDiv = document.createElement('div');
+    textDiv.className = 'location-text';
+    textDiv.textContent = locationString;
+
+    innerSpan.appendChild(icon);
+    innerSpan.appendChild(textDiv);
+    outterDiv.appendChild(innerSpan);
+    currentBatch.appendChild(outterDiv);
+  }
+}
+
 function currentLocationEventListen() {
   
   document.addEventListener('click', async function(event) {
@@ -103,6 +251,7 @@ function applyUnits() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  locationStorage.initialize();
 
   let lat = localStorage.getItem('latitude')
   let lon = localStorage.getItem('longitude')
@@ -110,16 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (lat === null || lon === null) {
     getLocation();
   }
-  lat = localStorage.getItem('latitude')
-  lon = localStorage.getItem('longitude')
-
-  console.log(`Lat: ${lat}, Lon ${lon}`);
-
-  // if (Number(lat) !== 'number' || Number(lon) !== 'number') {
-  //   getLocation();
-  //   // location.reload()
-  //   console.log(`Failed else if`)
-  // }
 
   document.getElementById('imperial-link').addEventListener('click', function () {
     setUnits('imperial');
@@ -151,8 +290,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (response.ok) {
         const data = await response.json();
         const { lat, lng } = data;
-
-        // Store the coordinates in local storage
+        
+        // Store the coordinates in local storage for repeat use
         localStorage.setItem('latitude', lat);
         localStorage.setItem('longitude', lng);
 
@@ -171,6 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   currentLocationEventListen();
+  renderLocationHistory();
 });
 
 // Disappearing suggestions div
@@ -256,4 +396,4 @@ function getLocalStorageSize() {
 
 // getLocalStorageSize();
 
-export {setUnits, applyUnits};
+export {locationStorage};
