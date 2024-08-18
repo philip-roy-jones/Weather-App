@@ -24,5 +24,9 @@
     <h2>Setup Instructions:</h2>
     <p>Please remember to <code>npm install</code> and create a <code>.env</code> file with the variables <code>OPEN_WEATHER_MAP_TOKEN</code> and <code>GOOGLE_KEY</code> before starting the server.</p>
     <p>After running <code>npm start</code>, navigate to <a href="http://localhost:3000">http://localhost:3000</a> in your web browser to view the app.</p>
+    <hr>
+    <div>
+        <strong>Note:</strong> This app is incomplete and will not be completed as it uses outdated practices, such as <code>.innerHTML()</code>. There are no current plans to update or finish this project.
+    </div>
 </body>
 </html>
