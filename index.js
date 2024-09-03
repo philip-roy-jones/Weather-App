@@ -28,6 +28,7 @@ const port = 3000;
 const openWeatherMapToken = process.env.OPEN_WEATHER_MAP_TOKEN;
 const googleKey = process.env.GOOGLE_KEY
 
+app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
