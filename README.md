@@ -7,7 +7,7 @@
 <body>
     <h1>Weather App</h1>
     <p>This is the section 29, "Use a Public API", capstone project for my Udemy course, <strong>"The Complete 2024 Web Development Bootcamp"</strong>, by Angela Yu.</p>
-    <p>Try the Demo! <a href="https://weather-app-one-dun-80.vercel.app/" target="_blank">https://weather-app-one-dun-80.vercel.app/</a></p>
+    <p>Try the Demo! <a href="https://weather-app-one-dun-80.vercel.app/" target="_blank">https://weather-app-philip.vercel.app/</a></p>
     <h2>Technologies Used:</h2>
     <ul>
         <li>Node JS</li>
